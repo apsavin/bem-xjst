@@ -138,6 +138,37 @@ var html = templates.apply(bemjson);
 ```
 Подробнее про [cоглашение по именованию](https://ru.bem.info/method/naming-convention/) на bem.info.
 
+### Экранирование
+
+Вы можете включить экранирование содержимого поля `content` опцией `escapeContent`.
+В этом случае ко всем строковым значениям `content` будет применена функция
+[`xmlEscape`](6-templates-context.md#xmlescape).
+
+```js
+var bemxjst = require('bem-xjst');
+var templates = bemxjst.bemhtml.compile(function() {
+    // В этом примере мы не добавляем пользовательских шаблонов.
+    // Для рендеринга HTML будет использовано поведение шаблонизатора по умолчанию.
+    }, {
+        escapeContent: true
+    });
+
+var bemjson = {
+    block: 'danger',
+    // Потенциально опасный и неконтролируемый текст
+    content: '&nbsp;<script src="alert()"></script>'
+};
+
+var html = templates.apply(bemjson);
+```
+В результате `html` будет содержать строку:
+```html
+<div class="danger">&amp;nbsp;&lt;script src="alert()"&gt;&lt;/script&gt;</div>
+```
+
+Если вам нужно вывести строку без экранирования [воспользуйтесь специальным
+значением поля `content`](4-data#content): `{ html: '…' }`.
+
 ### Расширение `BEMContext`
 
 Вы можете расширять `BEMContext`, чтобы использовать в теле шаблона пользовательские функции.
